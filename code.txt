@@ -352,3 +352,63 @@ Deactivate VoyantV
 ControleurAcces --> VoyantR : active
 Activate VoyantR
 @enduml
+
+Nouveau diagramme des classes :
+
+@startuml
+Class ControleurAcces {
+  + saisie : string
+  }
+
+  Class Voyant {
+  + couleur : String
+  + estAllume : boolean
+  }
+
+  Class BaseDonnees {
+ 
+  }
+
+  ControleurAcces *--> BaseDonnees : VerifieEntree()
+  BaseDonnees --> ControleurAcces : EnvoieReponse()
+
+
+  Class Porte {
+  - estOuverte : boolean
+  - estVerrouillee : boolean
+  }
+
+  Class Clavier {
+  + entreValeur() : void
+  }
+
+  Class Alarme {
+  - estActive : boolean
+  }
+
+  Class Minuteur {
+  - estActif : boolean
+  - tempsRestant : int
+  }
+
+  ControleurAcces *--> Minuteur : activeMinuteur(temps : int)
+  ControleurAcces *--> Minuteur : éteintMinuteur()
+
+  ControleurAcces *--> Alarme : déclencheAlarme()
+  ControleurAcces *--> Alarme : éteintAlarme()
+
+  ControleurAcces *--> Clavier
+  Clavier ---> ControleurAcces : envoieSaisie
+
+  ControleurAcces *--> Porte : VerrouillePorte()
+  ControleurAcces *--> Porte : DéverouillePorte()
+
+  ControleurAcces *--> Voyant : changeCouleur()
+
+  Class ArchiveTentative {
+  + code : String
+  + dateEntree : date
+  }
+
+  ControleurAcces "1" *--> "0..*" ArchiveTentative  : archiveTentative()
+@enduml
