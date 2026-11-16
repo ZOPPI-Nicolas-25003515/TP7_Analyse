@@ -1,0 +1,103 @@
+@startuml
+Class ControleurAcces {
++ saisie : string
+}
+
+Class Voyant {
++ estVert : boolean
++ porteOuverte : boolean
+}
+
+Class BaseDonnees {
+
+}
+
+ControleurAcces *--> BaseDonnees : VerifieEntree()
+
+
+Class Porte {
+}
+
+Class Clavier {
+}
+
+Class Alarme {
+}
+
+ControleurAcces *--> Alarme
+
+ControleurAcces *--> Clavier
+
+ControleurAcces *--> Porte
+
+ControleurAcces *--> Voyant
+
+Class ArchiveTentative {
++ code : String
++ dateEntree : date
+}
+
+ControleurAcces "1" *--> "0..*" ArchiveTentative  : archiveTentative()
+@enduml
+
+
+
+
+
+
+
+@startuml
+Actor Personne
+participant ControleurAcces
+participant Saisie
+participant VoyantR
+participant VoyantV
+participant Minuterie
+participant BD
+participant Archive
+participant Porte
+Activate ControleurAcces
+ControleurAcces --> VoyantR : active
+Activate VoyantR
+Personne<--ControleurAcces : Demande saisie
+Activate Saisie
+Activate Personne
+Personne-->Saisie : entre chiffre 1
+Saisie-->ControleurAcces : envoie chiffre 1
+ControleurAcces --> VoyantR : desactive
+Deactivate VoyantR
+ControleurAcces --> VoyantV : active
+Activate VoyantV
+ControleurAcces --> Minuterie : lance (5s)
+Activate Minuterie
+Personne-->Saisie : entre chiffre 2
+Saisie-->ControleurAcces : envoie chiffre 2
+Personne-->Saisie : entre chiffre 3
+Saisie-->ControleurAcces : envoie chiffre 3
+Personne-->Saisie : entre chiffre 4
+Saisie-->ControleurAcces : envoie code
+Deactivate Saisie
+
+ControleurAcces --> Minuterie : arrête
+Minuterie ---> ControleurAcces : desactive minuteur
+Deactivate Minuterie
+ControleurAcces --> Archive : Envoie la tentative
+ControleurAcces-->BD : Verifie entree
+Activate BD
+BD --> ControleurAcces : envoie reponse
+Deactivate BD
+
+alt succes case
+
+ControleurAcces --> Porte : Debloque
+Activate Porte
+ControleurAcces --> Minuterie : lance (20s)
+Activate Minuterie
+Personne --> Porte : ouvre
+
+alt porte fermee après passage
+
+Controleur --> Porte : Bloque
+
+Deactivate Personne
+@enduml
